@@ -147,6 +147,12 @@ class State():
         index = self.mod.get_index()
         return self.curr_value + self.val_coeff[index]*self.mod.get_h() * self.k[index-1]
 
+    def prime(self):  
+        """
+        状态变量的微分值
+        """
+        return self.func()
+    
     def calc(self):
         """
         计算最终斜率存储到k0，并利用k0 算出最终结果    
@@ -198,10 +204,10 @@ class State():
         else:
             return self.val() - other
 
-    def __div__(self, other):
+    def __truediv__ (self, other):
         return self.__div(other)
 
-    def __rdiv__(self, other):
+    def __rtruediv__ (self, other):
         return self.__div(other)
 
     def __div(self, other):
