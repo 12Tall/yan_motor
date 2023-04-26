@@ -3,6 +3,28 @@
 
 - [x] [直流电机特性](./dc_motor.ipynb)  
 - [x] [直流电机的PID 控制](./dc_motor_pid.ipynb)  
-- [ ] 重构，使得控制系统的结构更加清晰，而不是所有的代码都挤在同一的模块中  
-  - [ ] 添加系统信息，模块作为系统的一部分  
-  - [ ] 给模块添加输入输出变量   
+- [x] 重构，使得控制系统的结构更加清晰，而不是所有的代码都挤在同一的模块中  
+  - [x] 添加系统信息，模块作为系统的一部分  
+  - [x] ~~给模块添加输入输出变量~~：通过输入输出变量并不能使得代码更加直观，可能还会存在引用未定义变量的风险，故不做处理  
+  - [x] 通过有序字典存储模块和状态变量   
+
+
+## 使用说明   
+因为系统、模块与状态变量之间存在着相互依赖，尤其是构造函数部分，所以最好只是用以下推荐的函数。一个[简单的使用示例](./examples/test_new_system.ipynb)
+
+- `System`  
+  - `sys = System(name="sys", h=0.001, execution_time=10)`: 创建系统  
+  - `mod = sys.createModule(name)`: 创建模块  
+  - `sys.run(execution_time)`: 运行一段时间，默认为系统的执行时间    
+  - `sys.reset()`: 重置系统数据，但保留系统的各个模块与状态结构    
+  - `sys.draw(['modName_stateName'])`: 绘制系统中的变量随时间变化的曲线      
+- `Module`
+  - `theta = motor.createState(name="theta", func=lambda: omega, init_value=0)`: 创建变量    
+- `State`：使用说明如下
+  - `theta.prime()`: 用户获取状态方程的微分部分，有时候会用到，尤其是在算术方程转微分方程时
+
+以`x'=x, x_0 = 1` 为例，可以按以下形式构造状态变量：  
+```python  
+# x' = x, x初始值为1
+x = mod.createState(name="x", func=lambda: x, init_value=1)
+```
