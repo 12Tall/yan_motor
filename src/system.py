@@ -13,8 +13,7 @@ class System(object):
         self.result = []
         self.modules: OrderedDict[str, 'Module'] = OrderedDict()
         self.index = 0
-        timer = self.createModule("timer")
-        timer.createState('time', lambda: 1, init_value=0)
+        self.timer = self.createModule("timer").createState('time', lambda: 1, init_value=0)
 
     def get_h(self):
         """

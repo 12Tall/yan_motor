@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     from .system import System
 
 from .state import State
+from .aeq import AEQ
 from collections import OrderedDict
 
 
@@ -19,7 +20,6 @@ class Module(object):
         self.name = name
         self.sys = sys
         self.states: OrderedDict[str, 'State'] = OrderedDict()
-
 
     def get_h(self):
         return self.sys.get_h()
@@ -45,6 +45,22 @@ class Module(object):
         if self.states.get(state_name):
             print("【警告】状态名已存在，以前的状态变量将被覆盖掉")
         state = State(state_name, self, init_value, func)
+        self.states[state_name] = state
+        return state
+
+    def createAEQ(self,
+                  name="aeq",
+                  func: Callable[['Module'], float] = lambda mod: .0):
+        """        
+        从模块中创建一个算术方程变量  
+
+        Returns:  
+            state (State): 对于该变量的引用
+        """
+        state_name = name
+        if self.states.get(state_name):
+            print("【警告】状态名已存在，以前的状态变量将被覆盖掉")
+        state = AEQ(state_name, self, func)
         self.states[state_name] = state
         return state
 
